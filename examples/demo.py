@@ -45,3 +45,5 @@ with canvas(device) as draw:
     # Write two lines of text.
     draw.text((x, top),    'Hello',  font=font, fill=255)
     draw.text((x, top+20), 'World!', font=font, fill=255)
+
+device.close()

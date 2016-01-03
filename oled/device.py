@@ -50,7 +50,7 @@
 # As before, as soon as the with block completes, the canvas buffer is flushed
 # to the device
 
-import smbus
+import pigpio
 
 
 class device(object):
@@ -59,10 +59,14 @@ class device(object):
     """
 
     def __init__(self, port=1, address=0x3C, cmd_mode=0x00, data_mode=0x40):
+
         self.cmd_mode = cmd_mode
         self.data_mode = data_mode
-        self.bus = smbus.SMBus(port)
         self.addr = address
+
+        self.pi = pigpio.pi()
+        self.bus = self.pi.i2c_open(port, address)
+        print(self.bus)
 
     def command(self, *cmd):
         """
@@ -70,7 +74,8 @@ class device(object):
         device - maximum allowed is 32 bytes in one go.
         """
         assert(len(cmd) <= 32)
-        self.bus.write_i2c_block_data(self.addr, self.cmd_mode, list(cmd))
+        data = [self.cmd_mode] + list(cmd)
+        self.pi.i2c_write_device(self.bus, data)
 
     def data(self, data):
         """
@@ -78,10 +83,9 @@ class device(object):
         device - maximum allowed in one transaction is 32 bytes, so if
         data is larger than this it is sent in chunks.
         """
-        for i in xrange(0, len(data), 32):
-            self.bus.write_i2c_block_data(self.addr,
-                                          self.data_mode,
-                                          list(data[i:i+32]))
+        for i in range(0, len(data), 32):
+            chunk = [self.data_mode] + list(data[i:i+32])
+            self.pi.i2c_write_device(self.bus, chunk)
 
 
 class sh1106(device):
@@ -97,7 +101,7 @@ class sh1106(device):
         super(sh1106, self).__init__(port, address)
         self.width = 128
         self.height = 64
-        self.pages = self.height / 8
+        self.pages = int(self.height / 8)
 
         self.command(
             const.DISPLAYOFF,
@@ -135,9 +139,9 @@ class sh1106(device):
             page += 1
 
             buf = []
-            for x in xrange(self.width):
+            for x in range(self.width):
                 byte = 0
-                for n in xrange(0, step, self.width):
+                for n in range(0, step, self.width):
                     byte |= (pix[x + y + n] & 0x01) << 8
                     byte >>= 1
 
@@ -158,7 +162,7 @@ class ssd1306(device):
         super(ssd1306, self).__init__(port, address)
         self.width = 128
         self.height = 64
-        self.pages = self.height / 8
+        self.pages = int(self.height / 8)
 
         self.command(
             const.DISPLAYOFF,
@@ -193,11 +197,11 @@ class ssd1306(device):
         pix = list(image.getdata())
         step = self.width * 8
         buf = []
-        for y in xrange(0, self.pages * step, step):
+        for y in range(0, self.pages * step, step):
             i = y + self.width-1
             while i >= y:
                 byte = 0
-                for n in xrange(0, step, self.width):
+                for n in range(0, step, self.width):
                     byte |= (pix[i + n] & 0x01) << 8
                     byte >>= 1
 
