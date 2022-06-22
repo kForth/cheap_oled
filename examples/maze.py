@@ -98,7 +98,7 @@ class Maze(object):
 
     def render(self, draw, scale=lambda a: a):
 
-        for i in xrange(self.size):
+        for i in range(self.size):
             line = []
             p1 = self.coords(i)
 
@@ -116,7 +116,7 @@ class Maze(object):
 
     def to_string(self):
         s = ""
-        for y in xrange(self.height):
+        for y in range(self.height):
             for x in range(self.width):
                 s += "+"
                 if self.data[self.offset(x, y)] & NORTH != 0:
