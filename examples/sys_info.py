@@ -12,12 +12,9 @@ if os.name != 'posix':
 import psutil
 
 from datetime import datetime
-from oled.device import ssd1306, sh1106
-from oled.render import canvas
-from PIL import ImageDraw, ImageFont
-
-# TODO: custom font bitmaps for up/down arrows
-# TODO: Load histogram
+from cheap_oled.device import OLED_SSD1306, OLED_SH1106
+from cheap_oled.render import OLED_Canvas
+from PIL import ImageFont
 
 def bytes2human(n):
     """
@@ -61,16 +58,26 @@ def network(iface):
 
 def stats(oled):
     font = ImageFont.load_default()
-    font2 = ImageFont.truetype('../fonts/C&C Red Alert [INET].ttf', 12)
-    with canvas(oled) as draw:
+    font2 = ImageFont.truetype('fonts/C&C Red Alert [INET].ttf', 12)
+    with OLED_Canvas(oled) as draw:
         draw.text((0, 0), cpu_usage(), font=font2, fill=255)
         draw.text((0, 14), mem_usage(), font=font2, fill=255)
         draw.text((0, 26), disk_usage('/'), font=font2, fill=255)
-        draw.text((0, 38), network('wlan0'), font=font2, fill=255)
+        draw.text((0, 38), network('eth0'), font=font2, fill=255)
 
-def main():
-    oled = ssd1306(port=1, address=0x3C)
+def main(pi):
+    oled = OLED_SSD1306(pi, port=1, address=0x3C)
     stats(oled)
+    oled.close()
 
 if __name__ == "__main__":
-    main()
+    import pigpio
+
+    pi = pigpio.pi()
+
+    if not pi.connected:
+        exit()
+
+    main(pi)
+
+    pi.stop()

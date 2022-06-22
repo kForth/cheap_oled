@@ -3,14 +3,20 @@
 # Ported from:
 # https://github.com/adafruit/Adafruit_Python_SSD1306/blob/master/examples/shapes.py
 
-from oled.device import ssd1306, sh1106
-from oled.render import canvas
+import pigpio
 from PIL import ImageFont
+from cheap_oled.device import OLED_SSD1306, OLED_SH1106
+from cheap_oled.render import OLED_Canvas
+
+pi = pigpio.pi()
+
+if not pi.connected:
+    exit()
 
 font = ImageFont.load_default()
-device = ssd1306(port=1, address=0x3C)
+device = OLED_SSD1306(pi, port=1, address=0x3C)
 
-with canvas(device) as draw:
+with OLED_Canvas(device) as draw:
     # Draw some shapes.
     # First define some constants to allow easy resizing of shapes.
     padding = 2
@@ -47,3 +53,5 @@ with canvas(device) as draw:
     draw.text((x, top+20), 'World!', font=font, fill=255)
 
 device.close()
+
+pi.stop()

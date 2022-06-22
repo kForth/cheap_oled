@@ -6,21 +6,21 @@
 #    https://github.com/rm-hull/maze/blob/master/src/maze/generator.clj
 
 import time
-from oled.device import ssd1306, sh1106
-from oled.render import canvas
-from PIL import Image
 from random import randrange
+
+from PIL import Image
+from cheap_oled.device import OLED_SSD1306, OLED_SH1106
+from cheap_oled.render import OLED_Canvas
 
 NORTH = 1
 WEST = 2
-
 
 class Maze(object):
 
     def __init__(self, size):
         self.width = size[0]
         self.height = size[1]
-        self.size = self.width * self.height
+        self.size = int(self.width * self.height)
         self.generate()
 
     def offset(self, coords):
@@ -62,7 +62,7 @@ class Maze(object):
         if p2 - p1 == 1:
             return self.data[p2] & WEST != 0
 
-        return false;
+        return False
 
     def knockdown_wall(self, p1, p2):
         """ Knocks down the wall between the two given points in the maze.
@@ -84,7 +84,7 @@ class Maze(object):
 
         while len(stack) > 0:
             curr = stack[-1]
-            n = filter(not_visited, self.neighbours(curr))
+            n = list(filter(not_visited, self.neighbours(curr)))
             sz = len(n)
             if sz == 0:
                 stack.pop()
@@ -110,9 +110,9 @@ class Maze(object):
                 p3 = (p1[0], p1[1]+1)
                 line += p1 + p3
 
-            draw.line(map(scale, line), fill=1)
+            draw.line(list(map(scale, line)), fill=1)
 
-        draw.rectangle(map(scale, [0, 0, self.width, self.height]), outline=1)
+        draw.rectangle(list(map(scale, [0, 0, self.width, self.height])), outline=1)
 
     def to_string(self):
         s = ""
@@ -136,15 +136,24 @@ class Maze(object):
 
         return s
 
-def demo(iterations):
-    device = ssd1306(port=1, address=0x3C)
-    screen = (128, 64)
+def demo(pi, iterations):
+    device = OLED_SSD1306(pi, port=1, address=0x3C)
     for loop in range(iterations):
         for scale in [2,3,4,3]:
-            sz = map(lambda z: z/scale-1, screen)
-            with canvas(device) as draw:
-                Maze(sz).render(draw, lambda z: int(z * scale))
+            sz = [e // scale - 1 for e in (device.width, device.height)]
+            with OLED_Canvas(device) as draw:
+                Maze(sz).render(draw, lambda x: int(x * scale))
                 time.sleep(1)
+    device.close()
 
 if __name__ == "__main__":
-    demo(20)
+    import pigpio
+
+    pi = pigpio.pi()
+
+    if not pi.connected:
+        exit()
+
+    demo(pi, 20)
+    
+    pi.stop()

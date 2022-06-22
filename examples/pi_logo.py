@@ -1,11 +1,21 @@
 #!/usr/bin/env python
 
-from oled.device import ssd1306, sh1106
-from oled.render import canvas
+import pigpio
 from PIL import ImageDraw, Image
+from cheap_oled.device import OLED_SSD1306, OLED_SH1106
+from cheap_oled.render import OLED_Canvas
 
-device = ssd1306(port=1, address=0x3C)
+pi = pigpio.pi()
 
-with canvas(device) as draw:
+if not pi.connected:
+    exit()
+
+device = OLED_SSD1306(pi, port=1, address=0x3C)
+
+with OLED_Canvas(device) as draw:
     logo = Image.open('examples/images/pi_logo.png')
     draw.bitmap((32, 0), logo, fill=1)
+
+device.close()
+
+pi.stop()
