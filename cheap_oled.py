@@ -23,6 +23,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from PIL import Image, ImageDraw
+
 class OLED_Commands:
     """
     Commands that can be sent to adjust the OLED settings

@@ -10,5 +10,5 @@ setup(
     license = "MIT",
     keywords = "raspberry pi rpi oled ssd1306 sh1106",
     url = "https://github.com/kforth/cheap_oled",
-    packages=['cheap_oled'],
+    py_modules=['cheap_oled'],
 )
