@@ -2,8 +2,7 @@
 
 import pigpio
 from PIL import ImageDraw, Image
-from cheap_oled.device import OLED_SSD1306, OLED_SH1106
-from cheap_oled.render import OLED_Canvas
+from cheap_oled import OLED_SSD1306, OLED_SH1106, OLED_Canvas
 
 pi = pigpio.pi()
 

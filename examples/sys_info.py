@@ -9,12 +9,11 @@ import os
 import sys
 if os.name != 'posix':
     sys.exit('platform not supported')
-import psutil
-
 from datetime import datetime
-from cheap_oled.device import OLED_SSD1306, OLED_SH1106
-from cheap_oled.render import OLED_Canvas
+
+import psutil
 from PIL import ImageFont
+from cheap_oled import OLED_SSD1306, OLED_SH1106, OLED_Canvas
 
 def bytes2human(n):
     """
