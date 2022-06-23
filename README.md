@@ -4,15 +4,15 @@ Interfacing OLED matrix displays with the SSD1306 (or SH1106) driver in Python u
 I2C on the Raspberry Pi. The particular kit I bought can be acquired for 
 a few pounds from eBay: http://www.ebay.co.uk/itm/191279261331. Further 
 technical details for the SSD1306 OLED display can be found in the 
-[datasheet](https://raw.githubusercontent.com/rm-hull/ssd1306/master/doc/tech-spec/SSD1306.pdf) [PDF]. 
-See also the [datasheet](https://raw.githubusercontent.com/rm-hull/ssd1306/sh1106-compat/doc/tech-spec/SH1106.pdf) [PDF] for the SH1106 chipset.
+[datasheet](https://raw.githubusercontent.com/kForth/cheap_oled/master/doc/tech-spec/SSD1306.pdf) [PDF]. 
+See also the [datasheet](https://raw.githubusercontent.com/kForth/cheap_oled/sh1106-compat/doc/tech-spec/SH1106.pdf) [PDF] for the SH1106 chipset.
 
 The SSD1306 display is 128x64 pixels, and the board is _tiny_, and will fit neatly
 inside the RPi case (the SH1106 is slightly different, in that it supports 132x64
 pixels). My intention is to solder wires directly to the underside
 of the RPi GPIO pins so that the pins are still available for other purposes.
 
-![mounted](https://raw.githubusercontent.com/rm-hull/ssd1306/master/doc/mounted_display.jpg)
+![Mounted Display](https://raw.githubusercontent.com/kForth/cheap_oled/master/doc/mounted_display.jpg)
 
 ## GPIO pin-outs
 
@@ -29,7 +29,7 @@ For prototyping , the P1 header pins should be connected as follows:
 | 3         | SCL   | Clock       | P01-5   | GPIO 3 (SCL) | Purple |
 | 4         | SDA   | Data        | P01-3   | GPIO 2 (SDA) | Grey   |
 
-![GPIOS](https://raw.githubusercontent.com/rm-hull/ssd1306/master/doc/GPIOs.png)
+![GPIO Pins](https://raw.githubusercontent.com/kForth/cheap_oled/master/doc/GPIOs.png)
 
 [Attribution: http://elinux.org/Rpi_Low-level_peripherals]
 
@@ -46,7 +46,7 @@ initially enabled and may be configured for use with the Camera module.
 | 3         | SCL   | Clock       | P5-04   | GPIO 29 (SCL) | Purple |
 | 4         | SDA   | Data        | P5-03   | GPIO 28 (SDA) | Grey   |
 
-![P5 Header](https://raw.githubusercontent.com/rm-hull/ssd1306/master/doc/RPi_P5_header.png)
+![P5 Header](https://raw.githubusercontent.com/kForth/cheap_oled/master/doc/RPi_P5_header.png)
 
 [Attribution: http://elinux.org/Rpi_Low-level_peripherals]
 
